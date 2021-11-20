@@ -12,7 +12,6 @@ func main() {
 		Title:       "Open An Executable", // Title of the dialog window
 		Role:        "AtlasFilePick",      // used to differentiate between different file picker dialogs
 		FileFilters: []cfd.FileFilter{{DisplayName: "Executable Files (*.exe)", Pattern: "*.exe"}},
-		FileName:    "game.exe", // default file name
 	})
 	if err != nil {
 		fmt.Println(err)
