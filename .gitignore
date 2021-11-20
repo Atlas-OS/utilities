@@ -16,3 +16,10 @@
 
 # MacOS
 *.DS_Store
+
+
+# pyinstaller builds
+build/
+dist/
+*.spec
+__pycache__/
