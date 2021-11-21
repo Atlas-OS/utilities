@@ -1,2 +1,2 @@
-go build -ldflags="-w -s -H windowsgui" -gcflags="-dwarf=false"
+go build -ldflags="-w -s" -gcflags="-dwarf=false"
 pause
