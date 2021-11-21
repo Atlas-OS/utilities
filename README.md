@@ -5,10 +5,16 @@ Source Repo for utilities used in Atlas
 
 Simple file picker in Go using [go-common-file-dialog](https://github.com/harry1453/go-common-file-dialog)
 
-This returns just the path of an executable e.g. `C:\Windows\System32\notepad.exe`
+This returns the path of a file e.g. `C:\Windows\System32\notepad.exe`
 
-## MultiChoice-py
+## MultiChoice
 
-Simple multiple choice dialog in Python (TODO: Go) using [easygui](https://pypi.org/project/easygui)
+Simple multiple choice dialog in Go
 
-This returns a semi-colon delimited string e.g. `Yes;No;Maybe`
+This is originally written by [spddl](https://github.com/spddl), full credits to them.
+
+To use it you can run:
+
+```
+multichoice.exe "This is a title" "This is a prompt" "this;is;four;options"
+```

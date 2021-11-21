@@ -1,4 +1,4 @@
-module filepick
+module filepicker
 
 go 1.17
 
