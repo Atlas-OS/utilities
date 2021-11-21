@@ -20,7 +20,10 @@ var outputChoices []string
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	argsWithoutProg := os.Args[1:]
-
+	if len(argsWithoutProg) != 3 {
+		log.Println("Usage: multichoice Title Prompt Choices;here")
+		os.Exit(1)
+	}
 	title := argsWithoutProg[0]
 	prompt := argsWithoutProg[1]
 	inputChoices = strings.Split(argsWithoutProg[2], ";")
