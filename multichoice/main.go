@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 	"strings"
 
@@ -18,10 +17,9 @@ var inputChoices []string
 var outputChoices []string
 
 func main() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	argsWithoutProg := os.Args[1:]
 	if len(argsWithoutProg) != 3 {
-		log.Println("Usage: multichoice Title Prompt Choices;here")
+		println("Usage: multichoice Title Prompt Choices;here")
 		os.Exit(1)
 	}
 	title := argsWithoutProg[0]
@@ -66,21 +64,19 @@ func main() {
 			},
 		},
 	}.Create()); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	mw.Run()
 }
 
 func CheckBoxList(choices []string) []Widget {
-	bs := make([]*walk.CheckBox, len(choices))
 	children := []Widget{}
-	for i, name := range choices {
-		bs[i] = new(walk.CheckBox)
+	for _, name := range choices {
 		indexName := name
 		children = append(children, CheckBox{
-			AssignTo: &bs[i],
-			Text:     name,
+			Alignment: AlignHNearVNear, // added
+			Text:      name,
 			OnClicked: func() {
 				if i := contains(indexName, outputChoices); i != -1 {
 					outputChoices = remove(outputChoices, i)
