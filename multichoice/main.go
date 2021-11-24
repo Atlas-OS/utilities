@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"strings"
+	"fmt"
 
 	"github.com/lxn/walk"
 	//lint:ignore ST1001 standard behavior lxn/walk
@@ -50,7 +51,7 @@ func main() {
 					PushButton{
 						Text: "Ok",
 						OnClicked: func() {
-							println(strings.Join(outputChoices, ";"))
+							fmt.Println(strings.Join(outputChoices, ";"))
 							os.Exit(0)
 						},
 					},
