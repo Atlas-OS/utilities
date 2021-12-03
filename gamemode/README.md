@@ -16,6 +16,13 @@ DISABLE_IDLE: Disables idle while gamemode is active
 
 ## USAGE:
 
-This should be launched with NSudo like so:
+1. Launch your game
+2. Launch gamemode
+3. alt-tab to your game
+4. Once finished, alt-tab back to gamemode and press any key to restore functionality.
 
+Gamemode should be launched with NSudo (make sure it's somewhere in your path) like so:
+
+```
 nsudo -U:T -P:E -CurrentDirectory:C:\CHANGE\ME
+```
