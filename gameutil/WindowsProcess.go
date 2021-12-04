@@ -64,6 +64,7 @@ func (wp Processes) findProcessIDByNames(names []string) []string {
 	}
 	return result
 }
+
 func newWindowsProcess(e *windows.ProcessEntry32) Process {
 	// Find when the string ends for decoding
 	end := 0

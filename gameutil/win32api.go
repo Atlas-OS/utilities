@@ -24,7 +24,7 @@ var (
 func SuspendProc(pid uint32) {
 	handle, err := windows.OpenProcess(0x1F0FFF, false, pid)
 	if err != nil {
-		panic(err)
+		println(err)
 	}
 	procNtSuspendProcess.Call(uintptr(handle))
 }
@@ -32,7 +32,7 @@ func SuspendProc(pid uint32) {
 func NtResumeProcess(pid uint32) {
 	handle, err := windows.OpenProcess(0x1F0FFF, false, pid)
 	if err != nil {
-		panic(err)
+		println(err)
 	}
 	procNtResumeProcess.Call(uintptr(handle))
 }
