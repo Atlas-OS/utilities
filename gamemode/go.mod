@@ -1,4 +1,4 @@
-module gamemode
+module gameutil
 
 go 1.17
 

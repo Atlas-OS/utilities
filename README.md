@@ -19,7 +19,7 @@ To use it you can run:
 multichoice.exe "This is a title" "This is a prompt" "this;is;four;options"
 ```
 
-## GameMode-go
+## GameUtil-go
 
 A lightweight (zero cycles) program to kill DWM, explorer, set a timer resolution, and disable idle before gaming. 
 
@@ -38,12 +38,12 @@ Inside of `config.json` you can configure how gamemode behaves:
 ### Usage
 
 1. Launch your game
-2. Launch gamemode
+2. Launch GameUtil
 3. alt-tab to your game
-4. Once finished, alt-tab back to gamemode and press any key to restore functionality.
+4. Once finished, alt-tab back to GameUtil and press any key to restore functionality.
 
 Gamemode should be launched with [NSudo](https://github.com/M2Team/NSudo/releases/latest) (make sure it's somewhere in your path) like so:
 
 ```
-nsudo -U:T -P:E -CurrentDirectory:C:\CHANGE\ME
+nsudo -U:T -P:E -CurrentDirectory:C:\CHANGE\ME gameutil.exe
 ```
