@@ -1,4 +1,4 @@
-// authored by @sppdl, thank you!
+// authored by @spddl, thank you!
 package main
 
 import (
