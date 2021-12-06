@@ -18,7 +18,7 @@ import (
 
 type MyMainWindow struct {
 	*walk.MainWindow
-	*walk.NumberEdit // NumberEdit1
+	*walk.NumberEdit
 }
 
 var (
@@ -121,7 +121,6 @@ func main() {
 					PushButton{
 						Text: "Start",
 						OnClicked: func() {
-							label.SetText("Starting...")
 							start()
 						},
 					},
@@ -156,21 +155,16 @@ func start() {
 		NtSetTimerRes(TIMERRES)
 	}
 	if DISABLE_IDLE {
-		err := exec.Command("powercfg", "-setacvalueindex", "scheme_current", "sub_processor", "5d76a2ca-e8c0-402f-a133-2158492d58ad", "1").Start()
-		if err != nil {
-			fmt.Printf("Could not disable idle: %v\n", err)
-		}
+		exec.Command("powercfg", "-setacvalueindex", "scheme_current", "sub_processor", "5d76a2ca-e8c0-402f-a133-2158492d58ad", "1").Start()
+		exec.Command("powercfg", "-setactive", "scheme_current").Start()
 	}
 	if KILL_DWM {
 		// Kill explorer and other processes
-		fmt.Println("Killing DWM..")
 		p2k := []string{"explorer.exe", "searchapp.exe", "shellexperiencehost.exe", "searchui.exe", "runtimebroker.exe", "textinputhost.exe", "dllhost.exe", "wmiprvse.exe"}
 		pids := wp.findProcessIDByNames(p2k)
 		fmt.Println("p2k", pids)
 		killProcesses(pids)
-
 		// Suspend winlogon
-		fmt.Println("Suspending winlogon..")
 		pids = wp.findProcessIDByNames([]string{"winlogon.exe"})
 		fmt.Println("winlogon", pids)
 		pidUint, _ := strconv.ParseUint(pids[0], 10, 32)
@@ -191,14 +185,11 @@ func restore() {
 	// restore explorer, resume winlogon, dwm etc.
 	// timer resolution will be returned back to previous value after process is closed
 	if DISABLE_IDLE {
-		err := exec.Command("powercfg", "-setacvalueindex", "scheme_current", "sub_processor", "5d76a2ca-e8c0-402f-a133-2158492d58ad", "0").Start()
-		if err != nil {
-			fmt.Printf("Could not enable idle: %v\n", err)
-		}
+		exec.Command("powercfg", "-setacvalueindex", "scheme_current", "sub_processor", "5d76a2ca-e8c0-402f-a133-2158492d58ad", "0").Start()
+		exec.Command("powercfg", "-setactive", "scheme_current").Start()
 	}
 	if KILL_DWM {
 		// Resume winlogon
-		fmt.Println("Resuming winlogon..")
 		pids := wp.findProcessIDByNames([]string{"winlogon.exe"})
 		for _, pid := range pids {
 			pidUint, err := strconv.ParseUint(pid, 10, 32)
@@ -222,7 +213,6 @@ func restore() {
 		}()
 	}
 	if KILL_EXPLORER {
-		fmt.Println("Starting explorer..")
 		pids := wp.findProcessIDByNames([]string{"explorer.exe"})
 		killProcesses(pids)
 		ch := make(chan os.Signal)
