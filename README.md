@@ -1,5 +1,6 @@
 # Atlas-Utilities
-Source Repo for utilities used in Atlas
+
+Source Repo for Atlas Utilities. These utilities are free to be used, modified, and distributed in other projects, per the [License](https://github.com/Atlas-OS/Atlas-Utilities/blob/main/LICENSE)
 
 ## filepicker
 
@@ -38,9 +39,9 @@ Inside of `config.json` you can configure how gamemode behaves:
 ### Usage
 
 1. Launch your game
-2. Launch GameUtil
+2. Click start in GameUtil
 3. alt-tab to your game
-4. Once finished, alt-tab back to GameUtil and press any key to restore functionality.
+4. Once finished, alt-tab back to GameUtil and press "Restore" to restore functionality.
 
 Gamemode should be launched with [NSudo](https://github.com/M2Team/NSudo/releases/latest) (make sure it's somewhere in your path) like so:
 
