@@ -1,0 +1,30 @@
+name: Calc
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - calc/**
+  pull_request:
+    branches: [ main ]
+    paths:
+      - calc/**
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: cargo build --verbose --release --manifest-path ./calc/Cargo.toml
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.3.1
+      with:
+      # Artifact name
+       # optional, default is artifact
+    # A file, directory or wildcard pattern that describes what to upload
+        path: D:\a\Atlas-Utilities\Atlas-Utilities\calc\target\release\calc.exe
