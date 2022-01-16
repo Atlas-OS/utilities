@@ -3,10 +3,10 @@ fn main() {
     if args.len() > 1 {
         match args[1].as_ref() {
             "parse" => parse(args[2].as_ref()),
-            "add" => add(args[2].as_ref(), args[3].as_ref()),
+            "add" => println!("{}", args[2].parse::<f64>().unwrap() + args[3].parse::<f64>().unwrap()),
             "rnd" => println!("{}", args[2].parse::<f64>().unwrap().round()),
-            "div" => div(args[2].as_ref(), args[3].as_ref()),
-            "divint" => divint(args[2].as_ref(), args[3].as_ref()),
+            "div" => println!("{}", args[2].parse::<f64>().unwrap() / args[3].parse::<f64>().unwrap()),
+            "divint" => println!("{}", args[2].parse::<i32>().unwrap() / args[3].parse::<i32>().unwrap()),
             "help" => help(),
             _ => help(),
         }
@@ -42,24 +42,6 @@ fn parse(path: &str) {
             break;
         }
     }
-}
-
-fn add(val1: &str, val2: &str) {
-    let val1 = val1.parse::<f64>().unwrap();
-    let val2 = val2.parse::<f64>().unwrap();
-    println!("{}", val1 + val2);
-}
-
-fn div(val1: &str, val2: &str) {
-    let val1 = val1.parse::<f64>().unwrap();
-    let val2 = val2.parse::<f64>().unwrap();
-    println!("{}", val1 / val2);
-}
-
-fn divint(val1: &str, val2: &str) {
-    let val1 = val1.parse::<i32>().unwrap();
-    let val2 = val2.parse::<i32>().unwrap();
-    println!("{}", val1 / val2);
 }
 
 fn help() {
