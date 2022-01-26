@@ -7,8 +7,9 @@ exclude_patterns = [
 ]
 
 [[analyzers]]
-name = "go"
+name = "rust"
 enabled = true
 
-  [analyzers.meta]
-  import_root = "github.com/Atlas-OS/Atlas-Utilities"
+[[analyzers]]
+name = "go"
+enabled = true
