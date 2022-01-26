@@ -16,7 +16,7 @@ All settings will only change once you click the Start button, other than the Cl
 ### Usage
 
 1. Open your Game
-2. Open Gameutil
+2. Open Gameutil **with [NSudo](https://nsudo.m2team.org)**
 3. Configure settings and click start
 4. Play!
 5. Once finished, alt-tab to GameUtil and click Restore
