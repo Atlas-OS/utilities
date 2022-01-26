@@ -1,0 +1,31 @@
+name: gameutil-rs
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - gameutil-rs/**
+  pull_request:
+    branches: [ main ]
+    paths:
+      - gameutil-rs/**
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: cargo build --verbose --release --manifest-path ./gameutil-rs/Cargo.toml
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.3.1
+      with:
+      # Artifact name
+       # optional, default is artifact
+    # A file, directory or wildcard pattern that describes what to upload
+        path: D:\a\Atlas-Utilities\Atlas-Utilities\gameutil-rs\target\release\gameutil-rs.exe
