@@ -22,6 +22,13 @@ extern "system" {
     fn NtResumeProcess(ProcessHandle: *mut u32) -> i32;
 }
 
+// EmptyWorkingSet
+#[dll("psapi.dll")]
+extern "system" {
+    #[allow(non_snake_case)]
+    fn EmptyWorkingSet(hProcess: *mut c_void) -> i32;
+}
+
 pub fn timerres(value: u32) {
     let mut min = 0u32;
     let mut max = 0u32;
@@ -46,17 +53,17 @@ fn suspendproc(target: &str) {
     let pid = getpid(target);
     // use ntdll to suspend process
     unsafe {
-        let handle = winapi::um::processthreadsapi::OpenProcess(0x1F0FFF, 0, pid.into());
+        let handle = OpenProcess(0x1F0FFF, 0, pid.into());
         /*let ntstatus = */
         NtSuspendProcess(handle as *mut u32);
         //println!("NTStatus: {:#}", ntstatus);
     };
 }
 
-fn resumeproc(target: &str) {
+pub fn resumeproc(target: &str) {
     let pid = getpid(target);
     unsafe {
-        let handle = winapi::um::processthreadsapi::OpenProcess(0x1F0FFF, 0, pid.into());
+        let handle = OpenProcess(0x1F0FFF, 0, pid.into());
         /*let ntstatus = */
         NtResumeProcess(handle as *mut u32);
         //println!("NTStatus: {:#}", ntstatus);
@@ -94,11 +101,6 @@ pub fn killdwm() {
     }
 }
 
-pub fn resumedwmpost() {
-    resumeproc("winlogon.exe");
-    startproc("explorer.exe");
-}
-
 // disable idle: 1
 // enable idle: 0
 pub fn idle(off: u8) {
@@ -130,20 +132,13 @@ fn getpid(target: &str) -> u16 {
     return 65535;
 }
 
-// EmptyWorkingSet
-#[dll("psapi.dll")]
-extern "system" {
-    #[allow(non_snake_case)]
-    fn EmptyWorkingSet(hProcess: *mut c_void) -> i32;
-}
-
 pub fn cleanworkingset() {
     // get list of processes
     let mut sys = System::new();
     sys.refresh_processes();
     // for every process, clear it's working set
-    for process in sys.processes() {
-        unsafe {
+    unsafe {
+        for process in sys.processes() {
             // not very readable, so it goes:
             // pid -> handle -> empty working set
             //EmptyWorkingSet(gethandle(process.0));

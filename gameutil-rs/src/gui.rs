@@ -1,6 +1,3 @@
-#![windows_subsystem = "windows"]
-
-extern crate native_windows_gui as nwg;
 use nwg::NativeUi;
 
 mod sys;
@@ -9,7 +6,6 @@ mod sys;
 pub struct GameUtil {
     window: nwg::Window,
     layout: nwg::GridLayout,
-    //name_edit: nwg::TextInput,
     timerresval: nwg::TextInput,
     start_button: nwg::Button,
     clean_button: nwg::Button,
@@ -20,11 +16,9 @@ pub struct GameUtil {
 }
 mod app_gui {
     use super::*;
-    use native_windows_gui as nwg;
     use std::cell::RefCell;
     use std::ops::Deref;
     use std::rc::Rc;
-
     pub struct GameUtilUi {
         inner: Rc<GameUtil>,
         default_handler: RefCell<Option<nwg::EventHandler>>,
@@ -133,7 +127,8 @@ mod app_gui {
                                         sys::idle(0);
                                     }
                                     if ui.kill_dwm.check_state() == nwg::RadioButtonState::Checked {
-                                        sys::resumedwmpost();
+                                        sys::resumeproc("winlogon.exe");
+                                        sys::startproc("explorer.exe");
                                     } else {
                                         sys::startproc("explorer.exe");
                                     }
@@ -172,7 +167,7 @@ mod app_gui {
                                                 .text()
                                                 .chars()
                                                 .filter(|&c| c.is_numeric())
-                                                .collect::<String>()
+                                                .collect::<String>(),
                                         );
                                     }
                                 }
