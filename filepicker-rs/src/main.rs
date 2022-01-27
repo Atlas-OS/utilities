@@ -17,7 +17,7 @@ fn main() {
         }
     } else {
         let res = rfd::FileDialog::new()
-            .add_filter("All Files", &["*.*"])
+            .add_filter("All Files", &["*"])
             .pick_file();
         if res == None {
             println!("cancelled by user");
