@@ -24,8 +24,9 @@ fn parse(path: &str) {
         .unwrap();
     let mut sum: f64 = 0.0;
     let mut sorted_values: Vec<f64> = Vec::new();
+    let mut value: f64;
     for result in reader.records() {
-        let value = result.unwrap()[12].parse::<f64>().unwrap();
+        value = result.unwrap()[12].parse::<f64>().unwrap();
         // push into vector for sorting later
         sorted_values.push(value);
         // for counting benchmark time
