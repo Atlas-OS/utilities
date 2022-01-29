@@ -17,20 +17,18 @@ fn main() {
 
 fn parse(path: &str) {
     // OCAT CSVs change amount of headers after the first line, so make reader flexible
-    let mut reader = csv::ReaderBuilder::new()
+    let reader = csv::ReaderBuilder::new()
         .has_headers(true)
         .flexible(true)
-        .from_path(path)
-        .unwrap();
+        .from_path(path);
     let mut sum: f64 = 0.0;
     let mut sorted_values: Vec<f64> = Vec::new();
     let mut value: f64;
-    for result in reader.records() {
-        value = result.unwrap()[12].parse::<f64>().unwrap();
-        // push into vector for sorting later
+    // stay safe with unwrap
+    for record in reader.unwrap().records() {
+        value = record.unwrap().get(12).expect("Failed to parse CSV").parse::<f64>().unwrap();
+        sum += value;
         sorted_values.push(value);
-        // for counting benchmark time
-        sum+=value;
     }
     // sort values in descending order
     sorted_values.sort_by(|a, b| b.partial_cmp(a).unwrap());
