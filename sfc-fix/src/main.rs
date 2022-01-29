@@ -7,7 +7,7 @@ fn main() {
         .unwrap()
         .open_subkey("DerivedData\\Components")
         .unwrap();
-    let components_vec = components.enum_keys();
+    let components_vec = components.enum_keys().map(|x| x.unwrap()).collect::<Vec<_>>();
     // use regex to match the component name with something that contains "directui"
     let scan = [
         // some filters start abrubtly because of microsoft shortening strings for path limit
@@ -59,7 +59,7 @@ fn main() {
     let re = Regex::new(&scan.join("|")).unwrap();
     // iterate through the vector and delete the component if it matches the regex
     for component in components_vec {
-        let component_name = &component.unwrap();
+        let component_name = &component;
         if re.is_match(component_name) {
             println!("{}", component_name);
             components.delete_subkey(component_name).unwrap();
