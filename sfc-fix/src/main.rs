@@ -1,5 +1,4 @@
 use regex::Regex;
-use winreg::{self};
 
 fn main() {
     // load hive "HKLM\COMPONENTS", usually hidden
