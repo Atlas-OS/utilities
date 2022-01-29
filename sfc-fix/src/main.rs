@@ -12,7 +12,7 @@ fn main() {
     let scan = [
         // some filters start abrubtly because of microsoft shortening strings for path limit
         "microsoft-windows-shell-wallpaper-theme",
-        "backrounds-client",
+        "microsoft-windows-t..nbackgrounds-client", // img101-104.png
         "microsoft-windows-storagemigration",
         "xtservice-migration",
         "upgrade.resources",
