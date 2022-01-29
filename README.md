@@ -40,3 +40,10 @@ To use it you can run:
 ```
 multichoice.exe "This is a title" "This is a prompt" "this;is;four;options"
 ```
+
+
+## sfc-fix
+
+Modifies HKLM\Components to comply with `sfc /scannow` by removing manifests/hashes for stripped components.
+
+List may be expanded, for now only tested on 1803.
