@@ -107,7 +107,6 @@ mod app_gui {
                                         == nwg::CheckBoxState::Checked
                                     {
                                         sys::idle(1);
-
                                     }
                                     if ui.kill_dwm.check_state() == nwg::RadioButtonState::Checked {
                                         sys::killdwm();
@@ -139,16 +138,17 @@ mod app_gui {
                             if handle == ui.clean_button {
                                 sys::cleanworkingset();
                             }
-
                             if handle == ui.disableidle_button {
                                 // prevent changing setting while running
                                 if ui.start_button.text() == "Restore" {
                                     if ui.disableidle_button.check_state()
                                         == nwg::CheckBoxState::Unchecked
                                     {
-                                        ui.disableidle_button.set_check_state(
-                                            nwg::CheckBoxState::Checked,
-                                        );
+                                        ui.disableidle_button
+                                            .set_check_state(nwg::CheckBoxState::Checked);
+                                    } else {
+                                        ui.disableidle_button
+                                            .set_check_state(nwg::CheckBoxState::Unchecked);
                                     }
                                 }
                             }
