@@ -41,9 +41,15 @@ To use it you can run:
 multichoice.exe "This is a title" "This is a prompt" "this;is;four;options"
 ```
 
-
 ## sfc-fix
 
-Modifies HKLM\Components to comply with `sfc /scannow` by removing manifests/hashes for stripped components.
+Preinstall Utility which modifies HKLM\Components to comply with `sfc /scannow` by removing manifests/hashes for stripped components.
 
 List may be expanded, for now only tested on 1803.
+
+### Usage
+
+1. Mount an image with NTLite or DISM
+2. Open sfc-fix
+3. Go to MOUNTPOINT\Windows\System32\config and select the COMPONENTS hive
+4. Done! sfc-fix will now process the registry entries

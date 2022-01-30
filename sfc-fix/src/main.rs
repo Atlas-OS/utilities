@@ -1,8 +1,13 @@
 use regex::Regex;
 
 fn main() {
+    // get file with rfd
+    let file = rfd::FileDialog::new()
+        .set_title("Select the COMPONENTS Hive")
+        .set_file_name("COMPONENTS")
+        .pick_file();
     // load hive "HKLM\COMPONENTS", usually hidden
-    let hive = winreg::RegKey::load_app_key("C:\\Windows\\System32\\config\\COMPONENTS", true);
+    let hive = winreg::RegKey::load_app_key(file.unwrap(), true);
     let components = hive
         .unwrap()
         .open_subkey("DerivedData\\Components")

@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 winreg = "0.10.1"
+rfd = "0.7.0"
 
 [dependencies.regex]
 version = "1.5.4"
