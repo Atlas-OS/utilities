@@ -7,7 +7,10 @@ fn main() {
         .unwrap()
         .open_subkey("DerivedData\\Components")
         .unwrap();
-    let components_vec = components.enum_keys().map(|x| x.unwrap()).collect::<Vec<_>>();
+    let components_vec = components
+        .enum_keys()
+        .map(|x| x.unwrap())
+        .collect::<Vec<_>>();
     // use regex to match the component name with something that contains "directui"
     let scan = [
         // some filters start abrubtly because of microsoft shortening strings for path limit
@@ -38,6 +41,7 @@ fn main() {
         "microsoft-windows-hwvid",             // hwvidmigplugin.dll
         "netfx4-netfx_upgradecleanup",         // netfx45_upgradecleanup.inf
         "microsoft-windows-com-complus-setup", // conmig.dll
+        "microsoft-gaming-ga..rnal-presencewriter", // gamebarpresencewriter
         "microsoft-windows-appx",              // AppxUpgradeMigrationPlugin.dll
         "microsoft-windows-appx-deployment-server", // AppxUpgradeMigrationPlugin.dll
         "microsoft-onecore-tiledatarepository", // TileStoreMigrationPlugin.dll
