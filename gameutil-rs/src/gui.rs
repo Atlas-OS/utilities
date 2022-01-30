@@ -107,6 +107,7 @@ mod app_gui {
                                         == nwg::CheckBoxState::Checked
                                     {
                                         sys::idle(1);
+
                                     }
                                     if ui.kill_dwm.check_state() == nwg::RadioButtonState::Checked {
                                         sys::killdwm();
@@ -132,16 +133,24 @@ mod app_gui {
                                     } else {
                                         sys::startproc("explorer.exe");
                                     }
-                                    if ui.timerresval.text().parse::<u32>().unwrap() != 0 {
-                                        sys::timerres(
-                                            ui.timerresval.text().parse::<u32>().unwrap(),
-                                        );
-                                    }
                                     // change for button implementation
                                 }
                             }
                             if handle == ui.clean_button {
                                 sys::cleanworkingset();
+                            }
+
+                            if handle == ui.disableidle_button {
+                                // prevent changing setting while running
+                                if ui.start_button.text() == "Restore" {
+                                    if ui.disableidle_button.check_state()
+                                        == nwg::CheckBoxState::Unchecked
+                                    {
+                                        ui.disableidle_button.set_check_state(
+                                            nwg::CheckBoxState::Checked,
+                                        );
+                                    }
+                                }
                             }
                         }
                         E::OnWindowClose => {
