@@ -42,6 +42,7 @@ fn main() {
         "netfx4-netfx_upgradecleanup",         // netfx45_upgradecleanup.inf
         "microsoft-windows-com-complus-setup", // conmig.dll
         "microsoft-gaming-ga..rnal-presencewriter", // gamebarpresencewriter
+        "presencewriter",                      // gamebarpresencewriter
         "microsoft-windows-appx",              // AppxUpgradeMigrationPlugin.dll
         "microsoft-windows-appx-deployment-server", // AppxUpgradeMigrationPlugin.dll
         "microsoft-onecore-tiledatarepository", // TileStoreMigrationPlugin.dll
