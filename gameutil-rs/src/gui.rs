@@ -114,11 +114,10 @@ mod app_gui {
                                         sys::taskkill("explorer.exe");
                                     }
                                     if ui.timerresval.text().parse::<u32>().unwrap() != 0 {
-                                        //timerresval_copy = ui.timerresval.text().parse::<u32>().unwrap();
                                         sys::timerres(
-                                            //timerresval_copy,
                                             ui.timerresval.text().parse::<u32>().unwrap(),
                                         );
+                                        ui.timerresval.set_readonly(true);
                                     }
                                 } else {
                                     // rename button to Start
@@ -134,6 +133,7 @@ mod app_gui {
                                     } else {
                                         sys::startproc("explorer.exe");
                                     }
+                                    ui.timerresval.set_readonly(false);
                                     // change for button implementation
                                 }
                             }
@@ -162,10 +162,6 @@ mod app_gui {
                         }
                         E::OnTextInput => {
                             if handle == ui.timerresval {
-                                /*if ui.start_button.text() == "Restore" {
-                                    ui.timerresval.set_text(&timerresval_copy.to_string());
-                                }
-                                */
                                 // make sure numbers only
                                 #[allow(unused_variables)]
                                 // don't check for incorrect types if input is empty
