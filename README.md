@@ -6,7 +6,7 @@ Source Repo for Atlas Utilities. These utilities are free to be used, modified, 
 ![screenshot](/img/gameutil-rs.png)
 
 A tool to automate common tasks before gaming:
-  - Setting a timer resolution (5000 = 0.5ms)
+  - Setting a timer resolution
   - Killing DWM (or explorer)
   - Disabling Idle
   - "Cleaning" Memory
