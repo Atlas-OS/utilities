@@ -53,8 +53,8 @@ mod app_gui {
                 .build(&mut data.timerresval_label)?;
 
             nwg::TextInput::builder()
-                .text("5000")
-                .limit(5)
+                .text("0.5")
+                .limit(3)
                 .parent(&data.window)
                 .build(&mut data.timerresval)?;
 
@@ -113,9 +113,9 @@ mod app_gui {
                                     } else {
                                         sys::taskkill("explorer.exe");
                                     }
-                                    if ui.timerresval.text().parse::<u32>().unwrap() != 0 {
+                                    if ui.timerresval.text().parse::<f32>().unwrap() != 0.0 {
                                         sys::timerres(
-                                            ui.timerresval.text().parse::<u32>().unwrap(),
+                                            (ui.timerresval.text().parse::<f32>().unwrap() * 10000.0) as u32,
                                         );
                                         ui.timerresval.set_readonly(true);
                                     }
@@ -166,18 +166,19 @@ mod app_gui {
                                 #[allow(unused_variables)]
                                 // don't check for incorrect types if input is empty
                                 if !ui.timerresval.text().is_empty() {
-                                    if let Err(num) = ui.timerresval.text().parse::<u32>() {
+                                    if let Err(num) = ui.timerresval.text().parse::<f32>() {
                                         // warn message
                                         //nwg::modal_info_message(&ui.window, "Error", &format!("{} is not a valid number", ui.timerresval.text()));
 
                                         // remove last typed character in text input
                                         //ui.timerresval.set_text(&format!("{}", ui.timerresval.text().chars().take(ui.timerresval.text().chars().count() - 1).collect::<String>()));
+                                        
                                         // filter to only numbers
                                         ui.timerresval.set_text(
                                             &ui.timerresval
                                                 .text()
                                                 .chars()
-                                                .filter(|&c| c.is_numeric())
+                                                .filter(|&c| c.is_numeric() || c == '.')
                                                 .collect::<String>(),
                                         );
                                     }
