@@ -146,3 +146,12 @@ pub fn cleanworkingset() {
         }
     }
 }
+
+// TODO: args for more hotkeys and callbacks
+pub fn hotkey() -> livesplit_hotkey::Hook {
+    let hotkey = livesplit_hotkey::Hook::new().expect("failed to make new hotkey!");
+    hotkey.register(livesplit_hotkey::KeyCode::F4, move || {
+        cleanworkingset();
+    }).expect("failed to register hotkey!");
+    hotkey
+}

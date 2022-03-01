@@ -1,6 +1,6 @@
 use nwg::NativeUi;
 
-mod sys;
+pub mod sys;
 
 #[derive(Default)]
 pub struct GameUtil {
