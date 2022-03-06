@@ -11,7 +11,7 @@ A tool to automate common tasks before gaming:
   - Disabling Idle
   - "Cleaning" Memory (Button or Press F4)
 
-All settings will only change once you click the Start button, other than the Clean Memory Button (which also has a hotkey to clean if ingane, F4).
+All settings will only change once you click the Start button, other than the Clean Memory Button (which also has a hotkey to clean if ingame, F4).
 
 ### Usage
 
