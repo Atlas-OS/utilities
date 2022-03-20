@@ -10,6 +10,7 @@ pub struct GameUtil {
     start_button: nwg::Button,
     clean_button: nwg::Button,
     disableidle_button: nwg::CheckBox,
+    kill_none: nwg::CheckBox,
     kill_dwm: nwg::RadioButton,
     kill_exp: nwg::RadioButton,
     timerresval_label: nwg::Label,
@@ -65,6 +66,11 @@ mod app_gui {
                 .parent(&data.window)
                 .build(&mut data.disableidle_button)?;
 
+            nwg::CheckBox::builder()
+                .text("Disable Killing")
+                .parent(&data.window)
+                .build(&mut data.kill_none)?;
+
             nwg::Button::builder()
                 .text("Start")
                 .parent(&data.window)
@@ -108,14 +114,20 @@ mod app_gui {
                                     {
                                         sys::idle(1);
                                     }
-                                    if ui.kill_dwm.check_state() == nwg::RadioButtonState::Checked {
-                                        sys::killdwm();
-                                    } else {
-                                        sys::taskkill("explorer.exe");
+                                    if !ui.kill_none.enabled() {
+                                        if ui.kill_dwm.check_state()
+                                            == nwg::RadioButtonState::Checked
+                                        {
+                                            sys::killdwm();
+                                        } else {
+                                            sys::taskkill("explorer.exe");
+                                        }
                                     }
                                     if ui.timerresval.text().parse::<f32>().unwrap() != 0.0 {
                                         sys::timerres(
-                                            (ui.timerresval.text().parse::<f32>().unwrap() * 10000.0) as u32,
+                                            (ui.timerresval.text().parse::<f32>().unwrap()
+                                                * 10000.0)
+                                                as u32,
                                         );
                                         ui.timerresval.set_readonly(true);
                                     }
@@ -127,11 +139,15 @@ mod app_gui {
                                     {
                                         sys::idle(0);
                                     }
-                                    if ui.kill_dwm.check_state() == nwg::RadioButtonState::Checked {
-                                        sys::resumeproc("winlogon.exe");
-                                        sys::startproc("explorer.exe");
-                                    } else {
-                                        sys::startproc("explorer.exe");
+                                    if !ui.kill_none.enabled() {
+                                        if ui.kill_dwm.check_state()
+                                            == nwg::RadioButtonState::Checked
+                                        {
+                                            sys::resumeproc("winlogon.exe");
+                                            sys::startproc("explorer.exe");
+                                        } else {
+                                            sys::startproc("explorer.exe");
+                                        }
                                     }
                                     ui.timerresval.set_readonly(false);
                                     // change for button implementation
@@ -141,17 +157,31 @@ mod app_gui {
                                 sys::cleanworkingset();
                             }
                             if handle == ui.disableidle_button {
-                                // prevent changing setting while running
+                                // "Prevent" from changing checkbox when gameutil is running
                                 if ui.start_button.text() == "Restore" {
                                     if ui.disableidle_button.check_state()
-                                        == nwg::CheckBoxState::Unchecked
+                                        == nwg::CheckBoxState::Checked
                                     {
                                         ui.disableidle_button
-                                            .set_check_state(nwg::CheckBoxState::Checked);
+                                            .set_check_state(nwg::CheckBoxState::Unchecked);
                                     } else {
                                         ui.disableidle_button
-                                            .set_check_state(nwg::CheckBoxState::Unchecked);
+                                            .set_check_state(nwg::CheckBoxState::Checked);
                                     }
+                                }
+                            }
+                            if handle == ui.kill_none {
+                                if ui.start_button.text() == "Restore" {
+                                    // "Prevent" from changing checkbox when gameutil is running
+                                    if ui.kill_none.check_state() == nwg::CheckBoxState::Checked {
+                                        ui.kill_none.set_check_state(nwg::CheckBoxState::Unchecked);
+                                    } else {
+                                        ui.kill_none.set_check_state(nwg::CheckBoxState::Checked);
+                                    }
+                                } else {
+                                    // Toggle Enabled
+                                    ui.kill_dwm.set_enabled(!ui.kill_dwm.enabled());
+                                    ui.kill_exp.set_enabled(!ui.kill_exp.enabled());
                                 }
                             }
                         }
@@ -172,7 +202,7 @@ mod app_gui {
 
                                         // remove last typed character in text input
                                         //ui.timerresval.set_text(&format!("{}", ui.timerresval.text().chars().take(ui.timerresval.text().chars().count() - 1).collect::<String>()));
-                                        
+
                                         // filter to only numbers
                                         ui.timerresval.set_text(
                                             &ui.timerresval
@@ -200,6 +230,7 @@ mod app_gui {
                 .child(0, 0, &ui.timerresval_label)
                 .child(1, 0, &ui.timerresval)
                 .child(0, 1, &ui.disableidle_button)
+                .child(1, 1, &ui.kill_none)
                 .child(1, 3, &ui.clean_button)
                 .child(0, 2, &ui.kill_dwm)
                 .child(1, 2, &ui.kill_exp)
