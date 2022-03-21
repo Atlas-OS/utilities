@@ -1,4 +1,6 @@
-use nwg::NativeUi;
+use std::rc::Rc;
+
+use nwg::{CheckBoxState, NativeUi};
 
 pub mod sys;
 
@@ -105,46 +107,9 @@ mod app_gui {
                             if handle == ui.start_button {
                                 // TODO: switch case
                                 if ui.start_button.text() == "Start" {
-                                    // rename button to Restore
-                                    ui.start_button.set_text("Restore");
-                                    ui.kill_dwm.set_enabled(false);
-                                    ui.kill_exp.set_enabled(false);
-                                    if ui.disableidle_button.check_state()
-                                        == nwg::CheckBoxState::Checked
-                                    {
-                                        sys::idle(1);
-                                    }
-                                    if ui.kill_dwm.check_state() == CheckBoxState::Checked {
-                                        sys::killdwm();
-                                    } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
-                                        sys::taskkill("explorer.exe");
-                                    }
-                                    if ui.timerresval.text().parse::<f32>().unwrap() != 0.0 {
-                                        sys::timerres(
-                                            (ui.timerresval.text().parse::<f32>().unwrap()
-                                                * 10000.0)
-                                                as u32,
-                                        );
-                                        ui.timerresval.set_readonly(true);
-                                    }
+                                    start(ui.clone());
                                 } else {
-                                    // rename button to Start
-                                    ui.start_button.set_text("Start");
-                                    ui.kill_dwm.set_enabled(true);
-                                    ui.kill_exp.set_enabled(true);
-                                    if ui.disableidle_button.check_state()
-                                        == nwg::CheckBoxState::Checked
-                                    {
-                                        sys::idle(0);
-                                    }
-                                    if ui.kill_dwm.check_state() == CheckBoxState::Checked {
-                                        sys::resumeproc("winlogon.exe");
-                                        sys::startproc("explorer.exe");
-                                    } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
-                                        sys::startproc("explorer.exe");
-                                    }
-                                    ui.timerresval.set_readonly(false);
-                                    // change for button implementation
+                                    restore(ui.clone());
                                 }
                             }
                             if handle == ui.clean_button {
@@ -177,16 +142,8 @@ mod app_gui {
                         }
                         E::OnWindowClose => {
                             if handle == ui.window {
-                                if ui.disableidle_button.check_state()
-                                    == nwg::CheckBoxState::Checked
-                                {
-                                    sys::idle(0);
-                                }
-                                if ui.kill_dwm.check_state() == CheckBoxState::Checked {
-                                    sys::resumeproc("winlogon.exe");
-                                    sys::startproc("explorer.exe");
-                                } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
-                                    sys::startproc("explorer.exe");
+                                if ui.start_button.text() == "Restore" {
+                                    restore(ui.clone());
                                 }
                                 nwg::stop_thread_dispatch();
                             }
@@ -198,11 +155,8 @@ mod app_gui {
                                 // don't check for incorrect types if input is empty
                                 if !ui.timerresval.text().is_empty() {
                                     if let Err(num) = ui.timerresval.text().parse::<f32>() {
-                                        // warn message
+                                        // warning message
                                         //nwg::modal_info_message(&ui.window, "Error", &format!("{} is not a valid number", ui.timerresval.text()));
-
-                                        // remove last typed character in text input
-                                        //ui.timerresval.set_text(&format!("{}", ui.timerresval.text().chars().take(ui.timerresval.text().chars().count() - 1).collect::<String>()));
 
                                         // filter to only numbers
                                         ui.timerresval.set_text(
@@ -261,4 +215,41 @@ pub fn gui_init() {
     nwg::init().expect("Failed to init Native Windows GUI");
     let _ui = GameUtil::build_ui(Default::default()).expect("Failed to build UI");
     nwg::dispatch_thread_events();
+}
+
+fn restore(ui: Rc<GameUtil>) {
+    // rename button to Start
+    ui.start_button.set_text("Start");
+    // disallow chaning settings while running
+    ui.kill_dwm.set_enabled(true);
+    ui.kill_exp.set_enabled(true);
+    if ui.disableidle_button.check_state() == nwg::CheckBoxState::Checked {
+        sys::idle(0);
+    }
+    if ui.kill_dwm.check_state() == CheckBoxState::Checked {
+        sys::resumeproc("winlogon.exe");
+        sys::startproc("explorer.exe");
+    } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
+        sys::startproc("explorer.exe");
+    }
+    ui.timerresval.set_readonly(false);
+}
+
+fn start(ui: Rc<GameUtil>) {
+    // rename button to Restore
+    ui.start_button.set_text("Restore");
+    ui.kill_dwm.set_enabled(false);
+    ui.kill_exp.set_enabled(false);
+    if ui.disableidle_button.check_state() == nwg::CheckBoxState::Checked {
+        sys::idle(1);
+    }
+    if ui.kill_dwm.check_state() == CheckBoxState::Checked {
+        sys::killdwm();
+    } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
+        sys::taskkill("explorer.exe");
+    }
+    if ui.timerresval.text().parse::<f32>().unwrap() != 0.0 {
+        sys::timerres((ui.timerresval.text().parse::<f32>().unwrap() * 10000.0) as u32);
+        ui.timerresval.set_readonly(true);
+    }
 }
