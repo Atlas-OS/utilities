@@ -10,12 +10,13 @@ pub struct GameUtil {
     start_button: nwg::Button,
     clean_button: nwg::Button,
     disableidle_button: nwg::CheckBox,
-    kill_none: nwg::CheckBox,
-    kill_dwm: nwg::RadioButton,
-    kill_exp: nwg::RadioButton,
+    kill_dwm: nwg::CheckBox,
+    kill_exp: nwg::CheckBox,
     timerresval_label: nwg::Label,
 }
 mod app_gui {
+    use nwg::CheckBoxState;
+
     use super::*;
     use std::cell::RefCell;
     use std::ops::Deref;
@@ -66,27 +67,22 @@ mod app_gui {
                 .parent(&data.window)
                 .build(&mut data.disableidle_button)?;
 
-            nwg::CheckBox::builder()
-                .text("Disable Killing")
-                .parent(&data.window)
-                .build(&mut data.kill_none)?;
-
             nwg::Button::builder()
                 .text("Start")
                 .parent(&data.window)
                 .build(&mut data.start_button)?;
 
             // radio button for kill type
-            nwg::RadioButton::builder()
+            nwg::CheckBox::builder()
                 .text("Kill DWM")
-                .check_state(nwg::RadioButtonState::Checked)
+                .check_state(CheckBoxState::Checked)
                 .parent(&data.window)
                 .build(&mut data.kill_dwm)?;
 
             // radio button for kill type
-            nwg::RadioButton::builder()
+            nwg::CheckBox::builder()
                 .text("Kill Explorer")
-                .check_state(nwg::RadioButtonState::Unchecked)
+                .check_state(CheckBoxState::Unchecked)
                 .parent(&data.window)
                 .build(&mut data.kill_exp)?;
 
@@ -94,6 +90,7 @@ mod app_gui {
                 .text("Clean Memory")
                 .parent(&data.window)
                 .build(&mut data.clean_button)?;
+
             // Wrap-up
             let ui = GameUtilUi {
                 inner: Rc::new(data),
@@ -106,22 +103,21 @@ mod app_gui {
                     match evt {
                         E::OnButtonClick => {
                             if handle == ui.start_button {
+                                // TODO: switch case
                                 if ui.start_button.text() == "Start" {
                                     // rename button to Restore
                                     ui.start_button.set_text("Restore");
+                                    ui.kill_dwm.set_enabled(false);
+                                    ui.kill_exp.set_enabled(false);
                                     if ui.disableidle_button.check_state()
                                         == nwg::CheckBoxState::Checked
                                     {
                                         sys::idle(1);
                                     }
-                                    if !ui.kill_none.enabled() {
-                                        if ui.kill_dwm.check_state()
-                                            == nwg::RadioButtonState::Checked
-                                        {
-                                            sys::killdwm();
-                                        } else {
-                                            sys::taskkill("explorer.exe");
-                                        }
+                                    if ui.kill_dwm.check_state() == CheckBoxState::Checked {
+                                        sys::killdwm();
+                                    } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
+                                        sys::taskkill("explorer.exe");
                                     }
                                     if ui.timerresval.text().parse::<f32>().unwrap() != 0.0 {
                                         sys::timerres(
@@ -134,20 +130,18 @@ mod app_gui {
                                 } else {
                                     // rename button to Start
                                     ui.start_button.set_text("Start");
+                                    ui.kill_dwm.set_enabled(true);
+                                    ui.kill_exp.set_enabled(true);
                                     if ui.disableidle_button.check_state()
                                         == nwg::CheckBoxState::Checked
                                     {
                                         sys::idle(0);
                                     }
-                                    if !ui.kill_none.enabled() {
-                                        if ui.kill_dwm.check_state()
-                                            == nwg::RadioButtonState::Checked
-                                        {
-                                            sys::resumeproc("winlogon.exe");
-                                            sys::startproc("explorer.exe");
-                                        } else {
-                                            sys::startproc("explorer.exe");
-                                        }
+                                    if ui.kill_dwm.check_state() == CheckBoxState::Checked {
+                                        sys::resumeproc("winlogon.exe");
+                                        sys::startproc("explorer.exe");
+                                    } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
+                                        sys::startproc("explorer.exe");
                                     }
                                     ui.timerresval.set_readonly(false);
                                     // change for button implementation
@@ -170,23 +164,30 @@ mod app_gui {
                                     }
                                 }
                             }
-                            if handle == ui.kill_none {
-                                if ui.start_button.text() == "Restore" {
-                                    // "Prevent" from changing checkbox when gameutil is running
-                                    if ui.kill_none.check_state() == nwg::CheckBoxState::Checked {
-                                        ui.kill_none.set_check_state(nwg::CheckBoxState::Unchecked);
-                                    } else {
-                                        ui.kill_none.set_check_state(nwg::CheckBoxState::Checked);
-                                    }
-                                } else {
-                                    // Toggle Enabled
-                                    ui.kill_dwm.set_enabled(!ui.kill_dwm.enabled());
-                                    ui.kill_exp.set_enabled(!ui.kill_exp.enabled());
+                            if handle == ui.kill_dwm {
+                                if ui.kill_dwm.check_state() == CheckBoxState::Checked {
+                                    ui.kill_exp.set_check_state(CheckBoxState::Unchecked);
+                                }
+                            }
+                            if handle == ui.kill_exp {
+                                if ui.kill_exp.check_state() == CheckBoxState::Checked {
+                                    ui.kill_dwm.set_check_state(CheckBoxState::Unchecked);
                                 }
                             }
                         }
                         E::OnWindowClose => {
                             if handle == ui.window {
+                                if ui.disableidle_button.check_state()
+                                    == nwg::CheckBoxState::Checked
+                                {
+                                    sys::idle(0);
+                                }
+                                if ui.kill_dwm.check_state() == CheckBoxState::Checked {
+                                    sys::resumeproc("winlogon.exe");
+                                    sys::startproc("explorer.exe");
+                                } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
+                                    sys::startproc("explorer.exe");
+                                }
                                 nwg::stop_thread_dispatch();
                             }
                         }
@@ -230,7 +231,6 @@ mod app_gui {
                 .child(0, 0, &ui.timerresval_label)
                 .child(1, 0, &ui.timerresval)
                 .child(0, 1, &ui.disableidle_button)
-                .child(1, 1, &ui.kill_none)
                 .child(1, 3, &ui.clean_button)
                 .child(0, 2, &ui.kill_dwm)
                 .child(1, 2, &ui.kill_exp)
