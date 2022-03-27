@@ -141,7 +141,6 @@ pub fn cleanworkingset() {
         for process in sys.processes() {
             // not very readable, so it goes:
             // pid -> handle -> empty working set
-            //EmptyWorkingSet(gethandle(process.0));
             EmptyWorkingSet(OpenProcess(0x1F0FFF, 0, *process.0 as u32));
         }
     }

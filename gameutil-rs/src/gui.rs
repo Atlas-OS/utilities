@@ -15,6 +15,9 @@ pub struct GameUtil {
     kill_dwm: nwg::CheckBox,
     kill_exp: nwg::CheckBox,
     timerresval_label: nwg::Label,
+    timer_tooltip: nwg::Tooltip,
+    idle_tooltip: nwg::Tooltip,
+    clean_tooltip: nwg::Tooltip,
 }
 mod app_gui {
     use nwg::CheckBoxState;
@@ -92,6 +95,21 @@ mod app_gui {
                 .text("Clean Memory")
                 .parent(&data.window)
                 .build(&mut data.clean_button)?;
+
+            nwg::Tooltip::builder()
+                .register(
+                    &*&mut data.timerresval,
+                    "Has no effect on Windows 2004+, 0.0 to disable.",
+                )
+                .build(&mut data.timer_tooltip)?;
+
+            nwg::Tooltip::builder()
+                .register(&*&mut data.disableidle_button, "Disables the system idle process. Taskmgr will display CPU usage as 100%, is it not actually under 100% load.")
+                .build(&mut data.idle_tooltip)?;
+
+            nwg::Tooltip::builder()
+                .register(&*&mut data.clean_button, "Hotkey: F4. Cleans the working set of all processes. Can cause a slight stutter after clicking so if in-game run it when you are safe.")
+                .build(&mut data.clean_tooltip)?;
 
             // Wrap-up
             let ui = GameUtilUi {
