@@ -4,9 +4,9 @@ version = "0.3.0"
 edition = "2021"
 
 [dependencies]
-windows-dll = "0.3.0"
+windows-dll = "0.4.0"
 winapi = { version = "0.3.9", features = ["processthreadsapi"] }
-sysinfo = "0.22.4"
+sysinfo = "0.23.12"
 nwg = {version = "^1.0.12", package = "native-windows-gui"}
 livesplit-hotkey = "0.6.0"
 

@@ -40,7 +40,7 @@ mod app_gui {
                 .size(16)
                 .build(&mut font)
                 .expect("Failed to build font");
-            nwg::Font::set_global_default(windows_dll::Option::Some(font));
+            nwg::Font::set_global_default(Some(font));
 
             // Controls
             nwg::Window::builder()

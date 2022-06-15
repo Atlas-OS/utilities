@@ -1,5 +1,5 @@
 use std::{ffi::c_void, process::Command};
-use sysinfo::{ProcessExt, System, SystemExt};
+use sysinfo::{ProcessExt, System, SystemExt, PidExt};
 use winapi::um::processthreadsapi::OpenProcess;
 use windows_dll::dll;
 
@@ -119,13 +119,13 @@ pub fn idle(off: u8) {
         .expect("failed to set power settings");
 }
 
-fn getpid(target: &str) -> u16 {
+fn getpid(target: &str) -> u32 {
     let mut sys = System::new();
     sys.refresh_processes();
     // list all pids and process names
     for (pid, process) in sys.processes() {
         if process.name() == target {
-            return *pid as u16;
+            return pid.to_owned().as_u32();
         }
     }
     // don't want to return 0 if process not found
@@ -141,7 +141,7 @@ pub fn cleanworkingset() {
         for process in sys.processes() {
             // not very readable, so it goes:
             // pid -> handle -> empty working set
-            EmptyWorkingSet(OpenProcess(0x1F0FFF, 0, *process.0 as u32));
+            EmptyWorkingSet(OpenProcess(0x1F0FFF, 0, process.0.as_u32()));
         }
     }
 }
