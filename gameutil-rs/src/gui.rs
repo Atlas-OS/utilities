@@ -2,18 +2,20 @@ use std::rc::Rc;
 
 use nwg::{CheckBoxState, NativeUi};
 
+use crate::config::Config;
+
 pub mod sys;
 
 #[derive(Default)]
 pub struct GameUtil {
     window: nwg::Window,
     layout: nwg::GridLayout,
-    timerresval: nwg::TextInput,
+    timer_resolution: nwg::TextInput,
     start_button: nwg::Button,
     clean_button: nwg::Button,
     disableidle_button: nwg::CheckBox,
     kill_dwm: nwg::CheckBox,
-    kill_exp: nwg::CheckBox,
+    kill_explorer: nwg::CheckBox,
     timerresval_label: nwg::Label,
     timer_tooltip: nwg::Tooltip,
     idle_tooltip: nwg::Tooltip,
@@ -33,6 +35,8 @@ mod app_gui {
     impl nwg::NativeUi<GameUtilUi> for GameUtil {
         fn build_ui(mut data: GameUtil) -> Result<GameUtilUi, nwg::NwgError> {
             use nwg::Event as E;
+
+            let config: Config = Config::read();
 
             let mut font = nwg::Font::default();
             nwg::Font::builder()
@@ -60,16 +64,17 @@ mod app_gui {
                 .build(&mut data.timerresval_label)?;
 
             nwg::TextInput::builder()
-                .text("0.5")
+                .text(&format!("{}", config.timer_resolution))
                 .limit(3)
                 .parent(&data.window)
-                .build(&mut data.timerresval)?;
+                .build(&mut data.timer_resolution)?;
 
             // Disable Idle Option
             nwg::CheckBox::builder()
                 .text("Disable Idle")
                 //.position((10, 80))
                 .parent(&data.window)
+                .check_state(bool_to_checkbox_state(config.disable_idle))
                 .build(&mut data.disableidle_button)?;
 
             nwg::Button::builder()
@@ -80,16 +85,16 @@ mod app_gui {
             // radio button for kill type
             nwg::CheckBox::builder()
                 .text("Kill DWM")
-                .check_state(CheckBoxState::Checked)
+                .check_state(bool_to_checkbox_state(config.kill_dwm))
                 .parent(&data.window)
                 .build(&mut data.kill_dwm)?;
 
             // radio button for kill type
             nwg::CheckBox::builder()
                 .text("Kill Explorer")
-                .check_state(CheckBoxState::Unchecked)
+                .check_state(bool_to_checkbox_state(config.kill_explorer))
                 .parent(&data.window)
-                .build(&mut data.kill_exp)?;
+                .build(&mut data.kill_explorer)?;
 
             nwg::Button::builder()
                 .text("Clean Memory")
@@ -98,7 +103,7 @@ mod app_gui {
 
             nwg::Tooltip::builder()
                 .register(
-                    &*&mut data.timerresval,
+                    &*&mut data.timer_resolution,
                     "Has no effect on Windows 2004+, 0.0 to disable.",
                 )
                 .build(&mut data.timer_tooltip)?;
@@ -108,7 +113,7 @@ mod app_gui {
                 .build(&mut data.idle_tooltip)?;
 
             nwg::Tooltip::builder()
-                .register(&*&mut data.clean_button, "Hotkey: F4. Cleans the working set of all processes. Can cause a slight stutter after clicking so if in-game run it when you are safe.")
+                .register(&*&mut data.clean_button, "Hotkey: F4. Cleans the working set of all processes. Can cause a slight stutter after clicking so if using in-game run it when you are safe.")
                 .build(&mut data.clean_tooltip)?;
 
             // Wrap-up
@@ -149,11 +154,11 @@ mod app_gui {
                             }
                             if handle == ui.kill_dwm {
                                 if ui.kill_dwm.check_state() == CheckBoxState::Checked {
-                                    ui.kill_exp.set_check_state(CheckBoxState::Unchecked);
+                                    ui.kill_explorer.set_check_state(CheckBoxState::Unchecked);
                                 }
                             }
-                            if handle == ui.kill_exp {
-                                if ui.kill_exp.check_state() == CheckBoxState::Checked {
+                            if handle == ui.kill_explorer {
+                                if ui.kill_explorer.check_state() == CheckBoxState::Checked {
                                     ui.kill_dwm.set_check_state(CheckBoxState::Unchecked);
                                 }
                             }
@@ -167,23 +172,23 @@ mod app_gui {
                             }
                         }
                         E::OnTextInput => {
-                            if handle == ui.timerresval {
+                            if handle == ui.timer_resolution {
                                 // make sure numbers only
                                 #[allow(unused_variables)]
                                 // don't check for incorrect types if input is empty
-                                if !ui.timerresval.text().is_empty() {
-                                    if let Err(num) = ui.timerresval.text().parse::<f32>() {
+                                if !ui.timer_resolution.text().is_empty() {
+                                    if let Err(num) = ui.timer_resolution.text().parse::<f32>() {
                                         // warning message
-                                        //nwg::modal_info_message(&ui.window, "Error", &format!("{} is not a valid number", ui.timerresval.text()));
+                                        //nwg::modal_info_message(&ui.window, "Error", &format!("{} is not a valid number", ui.timer_resolution.text()));
 
                                         // filter to only numbers
-                                        ui.timerresval.set_text(
-                                            &ui.timerresval
-                                                .text()
-                                                .chars()
-                                                .filter(|&c| c.is_numeric() || c == '.')
-                                                .collect::<String>(),
-                                        );
+                                        let timer_resolution: String = ui
+                                            .timer_resolution
+                                            .text()
+                                            .chars()
+                                            .filter(|&c| c.is_numeric() || c == '.')
+                                            .collect::<String>();
+                                        ui.timer_resolution.set_text(&timer_resolution);
                                     }
                                 }
                             }
@@ -201,11 +206,11 @@ mod app_gui {
                 .parent(&ui.window)
                 .spacing(1)
                 .child(0, 0, &ui.timerresval_label)
-                .child(1, 0, &ui.timerresval)
+                .child(1, 0, &ui.timer_resolution)
                 .child(0, 1, &ui.disableidle_button)
                 .child(1, 3, &ui.clean_button)
                 .child(0, 2, &ui.kill_dwm)
-                .child(1, 2, &ui.kill_exp)
+                .child(1, 2, &ui.kill_explorer)
                 .child_item(nwg::GridLayoutItem::new(&ui.start_button, 0, 3, 1, 1))
                 .build(&ui.layout)?;
             return Ok(ui);
@@ -240,34 +245,56 @@ fn restore(ui: Rc<GameUtil>) {
     ui.start_button.set_text("Start");
     // disallow chaning settings while running
     ui.kill_dwm.set_enabled(true);
-    ui.kill_exp.set_enabled(true);
+    ui.kill_explorer.set_enabled(true);
     if ui.disableidle_button.check_state() == nwg::CheckBoxState::Checked {
         sys::idle(0);
     }
     if ui.kill_dwm.check_state() == CheckBoxState::Checked {
         sys::resumeproc("winlogon.exe");
         sys::startproc("explorer.exe");
-    } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
+    } else if ui.kill_explorer.check_state() == CheckBoxState::Checked {
         sys::startproc("explorer.exe");
     }
-    ui.timerresval.set_readonly(false);
+    ui.timer_resolution.set_readonly(false);
 }
 
 fn start(ui: Rc<GameUtil>) {
+    let mut config: Config = Config {
+        kill_dwm: false,
+        kill_explorer: false,
+        disable_idle: false,
+        timer_resolution: 1.0,
+    };
     // rename button to Restore
     ui.start_button.set_text("Restore");
+    // Lock settings so there is proper restoration
     ui.kill_dwm.set_enabled(false);
-    ui.kill_exp.set_enabled(false);
+    ui.kill_explorer.set_enabled(false);
     if ui.disableidle_button.check_state() == nwg::CheckBoxState::Checked {
         sys::idle(1);
+        config.disable_idle = true;
     }
     if ui.kill_dwm.check_state() == CheckBoxState::Checked {
         sys::killdwm();
-    } else if ui.kill_exp.check_state() == CheckBoxState::Checked {
+        config.kill_dwm = true;
+        config.kill_explorer = false;
+    } else if ui.kill_explorer.check_state() == CheckBoxState::Checked {
         sys::taskkill("explorer.exe");
+        config.kill_explorer = true;
+        config.kill_dwm = false;
     }
-    if ui.timerresval.text().parse::<f32>().unwrap() != 0.0 {
-        sys::timerres((ui.timerresval.text().parse::<f32>().unwrap() * 10000.0) as u32);
-        ui.timerresval.set_readonly(true);
+    if ui.timer_resolution.text().parse::<f32>().unwrap() != 0.0 {
+        let resolution: f64 = ui.timer_resolution.text().parse::<f64>().unwrap();
+        sys::timerres((resolution * 10000.0) as u32);
+        config.timer_resolution = resolution;
+        ui.timer_resolution.set_readonly(true);
+    }
+    config.write().unwrap();
+}
+
+fn bool_to_checkbox_state(b: bool) -> CheckBoxState {
+    match b {
+        true => CheckBoxState::Checked,
+        false => CheckBoxState::Unchecked,
     }
 }

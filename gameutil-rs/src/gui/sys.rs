@@ -1,5 +1,5 @@
 use std::{ffi::c_void, process::Command};
-use sysinfo::{ProcessExt, System, SystemExt, PidExt};
+use sysinfo::{PidExt, ProcessExt, System, SystemExt};
 use winapi::um::processthreadsapi::OpenProcess;
 use windows_dll::dll;
 
