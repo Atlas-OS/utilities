@@ -3,6 +3,9 @@ use sysinfo::{PidExt, ProcessExt, System, SystemExt};
 use winapi::um::processthreadsapi::OpenProcess;
 use windows_dll::dll;
 
+// https://www.aldeid.com/wiki/Process-Security-and-Access-Rights
+const PROCESS_ALL_ACCESS: u32 = 0x1F0FFF;
+
 #[dll("ntdll.dll")]
 extern "system" {
     #[allow(non_snake_case)]
@@ -52,22 +55,26 @@ pub fn timerres(value: u32) {
 fn suspendproc(target: &str) {
     let pid = getpid(target);
     // use ntdll to suspend process
-    unsafe {
-        let handle = OpenProcess(0x1F0FFF, 0, pid.into());
-        /*let ntstatus = */
-        NtSuspendProcess(handle as *mut u32);
-        //println!("NTStatus: {:#}", ntstatus);
-    };
+    if let Some(pid) = pid {
+        unsafe {
+            let handle = OpenProcess(PROCESS_ALL_ACCESS, 0, pid);
+            /*let ntstatus = */
+            NtSuspendProcess(handle as *mut u32);
+            //println!("NTStatus: {:#}", ntstatus);
+        };
+    }
 }
 
 pub fn resumeproc(target: &str) {
     let pid = getpid(target);
-    unsafe {
-        let handle = OpenProcess(0x1F0FFF, 0, pid.into());
-        /*let ntstatus = */
-        NtResumeProcess(handle as *mut u32);
-        //println!("NTStatus: {:#}", ntstatus);
-    };
+    if let Some(pid) = pid {
+        unsafe {
+            let handle = OpenProcess(PROCESS_ALL_ACCESS, 0, pid);
+            /*let ntstatus = */
+            NtResumeProcess(handle as *mut u32);
+            //println!("NTStatus: {:#}", ntstatus);
+        };
+    }
 }
 
 pub fn taskkill(programname: &str) {
@@ -95,7 +102,7 @@ pub fn killdwm() {
     suspendproc("winlogon.exe");
     for proc in p2k.iter() {
         let pid = getpid(proc);
-        if pid != 0 {
+        if pid.is_some() {
             taskkill(proc);
         }
     }
@@ -119,17 +126,19 @@ pub fn idle(off: u8) {
         .expect("failed to set power settings");
 }
 
-fn getpid(target: &str) -> u32 {
+fn getpid(target: &str) -> Option<u32> {
     let mut sys = System::new();
     sys.refresh_processes();
-    // list all pids and process names
-    for (pid, process) in sys.processes() {
-        if process.name() == target {
-            return pid.to_owned().as_u32();
-        }
-    }
-    // don't want to return 0 if process not found
-    return 65535;
+    sys.processes()
+        .iter()
+        .map(|(pid, process)| {
+            if process.name() == target {
+                return Some(pid.to_owned().as_u32());
+            }
+            None
+        })
+        .next()
+        .unwrap_or(None)
 }
 
 pub fn cleanworkingset() {
@@ -137,13 +146,9 @@ pub fn cleanworkingset() {
     let mut sys = System::new();
     sys.refresh_processes();
     // for every process, clear it's working set
-    unsafe {
-        for process in sys.processes() {
-            // not very readable, so it goes:
-            // pid -> handle -> empty working set
-            EmptyWorkingSet(OpenProcess(0x1F0FFF, 0, process.0.as_u32()));
-        }
-    }
+    sys.processes().iter().for_each(|p| unsafe {
+        EmptyWorkingSet(OpenProcess(PROCESS_ALL_ACCESS, 0, p.0.as_u32()));
+    })
 }
 
 // TODO: args for more hotkeys and callbacks

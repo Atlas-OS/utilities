@@ -31,12 +31,13 @@ impl Config {
                 let config = Config::default();
                 config.write().expect("Failed to write config file!");
                 config
-            },
+            }
             Ok(mut file) => {
                 let mut contents = String::new();
                 file.read_to_string(&mut contents)
                     .expect("Failed to read config file!");
-                let mut config: Config = toml::from_str(&contents).expect("Failed to parse config file!");
+                let mut config: Config =
+                    toml::from_str(&contents).expect("Failed to parse config file!");
                 // Prevent both from being true, dwm kills explorer already
                 if config.kill_dwm && config.kill_explorer {
                     config.kill_explorer = false;
