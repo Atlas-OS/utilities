@@ -7,8 +7,8 @@ Source Repo for Atlas Utilities. These utilities are free to be used, modified, 
 
 A tool to automate common tasks before gaming:
   - Setting a timer resolution
-  - Killing DWM (or explorer)
-  - Disabling Idle
+  - Killing Desktop Window Manager (or explorer)
+  - Disabling CPU Idle states
   - "Cleaning" Memory (Button or Press F4)
 
 All settings will only change once you click the Start button, other than the Clean Memory Button (which also has a hotkey to clean if ingame, F4).
