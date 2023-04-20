@@ -121,9 +121,10 @@ mod app_gui {
                 inner: Rc::new(data),
                 default_handler: Default::default(),
             };
+
             // Events
             let evt_ui = Rc::downgrade(&ui.inner);
-            let handle_events = move |evt, _evt_data, handle| {
+            let handle_events = move |evt, _evt_data, handle | {
                 if let Some(ui) = evt_ui.upgrade() {
                     match evt {
                         E::OnButtonClick => {

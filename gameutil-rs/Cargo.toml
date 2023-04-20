@@ -6,11 +6,13 @@ edition = "2021"
 [dependencies]
 windows-dll = "0.4.0"
 winapi = { version = "0.3.9", features = ["processthreadsapi"] }
-sysinfo = "0.24.3"
+sysinfo = "0.28"
 nwg = {version = "^1.0.12", package = "native-windows-gui"}
 livesplit-hotkey = "0.6.0"
-toml = "0.5"
+toml = "0.6"
 serde = {version = "1.0.136"}
+clap = { version = "4.2.4", features = ["derive", "help", "std", "usage"], default_features = false }
+rand = "0.8.5"
 
 [target.'cfg(target_os="windows")'.build-dependencies]
 winres = "^0.1"
