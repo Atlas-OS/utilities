@@ -1,0 +1,23 @@
+readme:
+- '**/README.md'
+
+actions:
+- .github/workflows/**/*
+- .github/labeler.yml
+
+# Go
+
+multichoice:
+- multichoice/**/*
+
+gameutil:
+- gameutil/**/*
+
+filepicker:
+- filepicker/**/*
+
+# Rust
+
+sfc-fix:
+- sfc-fix/**/*
+
