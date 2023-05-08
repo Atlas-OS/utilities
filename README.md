@@ -1,6 +1,8 @@
 # Atlas-Utilities
 
-Source Repo for Atlas Utilities. These utilities are free to be used, modified, and distributed in other projects, per the [License](https://github.com/Atlas-OS/Atlas-Utilities/blob/main/LICENSE)
+These utilities are free to be used, modified, and distributed in other projects. The license is [GPLv3](https://github.com/Atlas-OS/Atlas-Utilities/blob/main/LICENSE).
+
+**Read the Contribution Guidelines:** https://docs.atlasos.net/contributions
 
 ## GameUtil-rs
 ![screenshot](/img/gameutil-rs.png)
@@ -43,7 +45,7 @@ multichoice.exe "This is a title" "This is a prompt" "this;is;four;options"
 
 ## sfc-fix
 
-Preinstall Utility which modifies HKLM\Components to comply with `sfc /scannow` by removing manifests/hashes for stripped components.
+Preinstall Utility which modifies `HKLM\Components` to comply with `sfc /scannow` by removing manifests/hashes for stripped components.
 
 List may be expanded, for now only tested on 1803.
 
