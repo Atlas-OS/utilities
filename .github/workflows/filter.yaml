@@ -1,8 +1,6 @@
-name: "Pull Request Filter"
+name: Pull Request Filter
 
-on: workflow_dispatch
-  # pull_request_target:
-    # - opened
+on: pull_request_target
 
 jobs:
   filter:
@@ -21,7 +19,7 @@ jobs:
       - name: Close pull requests that directly commit to main
         run: |
             comment="
-            You can not directly commit to the [\`main\`](https://github.com/Atlas-OS/Atas-Utilities) branch, read the contribution guide and only commit to [\`dev\`](https://github.com/Atlas-OS/Atas-Utilities/tree/dev).
+            You can not directly commit to the [\`main\`](https://github.com/Atlas-OS/Atlas-Utilities) branch, read the contribution guide and only commit to [\`dev\`](https://github.com/Atlas-OS/Atlas-Utilities/tree/dev).
                 
             **Contribution Guidelines:** https://docs.atlasos.net/contributions
             "
