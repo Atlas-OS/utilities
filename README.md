@@ -1,5 +1,7 @@
 # Atlas-Utilities
 
+<a href="https://github.com/Atlas-OS/.github/blob/main/profile/CODE_OF_CONDUCT.md"><img alt="Code of Conduct" src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=for-the-badge&color=1A91FF" /></a>
+
 These utilities are free to be used, modified, and distributed in other projects. The license is [GPLv3](https://github.com/Atlas-OS/Atlas-Utilities/blob/main/LICENSE).
 
 **Read the Contribution Guidelines:** https://docs.atlasos.net/contributions
