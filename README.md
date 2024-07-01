@@ -4,6 +4,9 @@
 
 These utilities are free to be used, modified, and distributed in other projects. The license is [GPLv3](https://github.com/Atlas-OS/Atlas-Utilities/blob/main/LICENSE).
 
+> [!WARNING]  
+> These tools aren't updated often, and therefore, utilities aren't made for the latest version of Atlas. No support will be offered with these, but feel free to contribute.
+
 **Read the Contribution Guidelines:** https://docs.atlasos.net/contributions
 
 ## GameUtil-rs
