@@ -60,3 +60,14 @@ List may be expanded, for now only tested on 1803.
 2. Open sfc-fix
 3. Go to MOUNTPOINT\Windows\System32\config and select the COMPONENTS hive
 4. Done! sfc-fix will now process the registry entries
+
+---
+
+## On `rsrc.syso`
+
+`gameutil/` and `multichoice/` both contain a binary file `rsrc.syso` that gets linked into the executable upon building.
+They were created with [rsrc](https://github.com/akavel/rsrc), a Go tool that embeds a Windows manifest to get a standalone executable.
+It is needed for the GUI module, [Walk](https://github.com/lxn/walk) to function.
+Walk's repository explains [why](https://github.com/lxn/walk/blob/c389da54e794a411ec9c9bfda01f2a0eb1b5a9b4/README.mdown#application-manifest-files)
+and [how to produce manifests/syso files](https://github.com/lxn/walk/blob/c389da54e794a411ec9c9bfda01f2a0eb1b5a9b4/README.mdown#create-manifest-testmanifest).
+The manifests embedded here are the exact XML from their example.
