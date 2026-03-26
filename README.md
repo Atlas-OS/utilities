@@ -60,3 +60,9 @@ List may be expanded, for now only tested on 1803.
 2. Open sfc-fix
 3. Go to MOUNTPOINT\Windows\System32\config and select the COMPONENTS hive
 4. Done! sfc-fix will now process the registry entries
+
+---
+
+## On `rsrc.syso`
+
+`gameutil/` and `multichoice/` both contain a binary file `rsrc.syso` that gets linked into the executable upon building. They were created with [rsrc](https://github.com/akavel/rsrc) and contain a manifest required for the GUI module [Walk](https://github.com/lxn/walk) to function. The manifests in question have the exact XML content from [Walk's example](https://github.com/lxn/walk/blob/c389da54e794a411ec9c9bfda01f2a0eb1b5a9b4/README.mdown#create-manifest-testmanifest).
