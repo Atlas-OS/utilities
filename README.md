@@ -65,9 +65,4 @@ List may be expanded, for now only tested on 1803.
 
 ## On `rsrc.syso`
 
-`gameutil/` and `multichoice/` both contain a binary file `rsrc.syso` that gets linked into the executable upon building.
-They were created with [rsrc](https://github.com/akavel/rsrc), a Go tool that embeds a Windows manifest to get a standalone executable.
-It is needed for the GUI module, [Walk](https://github.com/lxn/walk) to function.
-Walk's repository explains [why](https://github.com/lxn/walk/blob/c389da54e794a411ec9c9bfda01f2a0eb1b5a9b4/README.mdown#application-manifest-files)
-and [how to produce manifests/syso files](https://github.com/lxn/walk/blob/c389da54e794a411ec9c9bfda01f2a0eb1b5a9b4/README.mdown#create-manifest-testmanifest).
-The manifests embedded here are the exact XML from their example.
+`gameutil/` and `multichoice/` both contain a binary file `rsrc.syso` that gets linked into the executable upon building. They were created with [rsrc](https://github.com/akavel/rsrc) and contain a manifest required for the GUI module [Walk](https://github.com/lxn/walk) to function. The manifests in question have the exact XML content from [Walk's example](https://github.com/lxn/walk/blob/c389da54e794a411ec9c9bfda01f2a0eb1b5a9b4/README.mdown#create-manifest-testmanifest).
